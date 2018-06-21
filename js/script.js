@@ -2,105 +2,157 @@ $(document).ready(function($) {
     var windowEl = $(window);
     var windowW = windowEl.width();
     var beforeWidth = $(this).width();
+    var maxWidth_1199 = window.matchMedia("(max-width: 1199px)");
+    var maxWidth_1050 = window.matchMedia("(max-width: 1050px)");
+    var maxWidth_991 = window.matchMedia("(max-width: 991px)");
 
-    // обновление страницы при масштабировании
-    $(window).resize(function() {
-        var afterWidth = $(this).width();
-        if (afterWidth != beforeWidth) {
-            location.reload()
-        }
-    })
+    $('.about-item').on('click', function() {
+        $(this).siblings().removeClass('active').children().next().stop().slideUp(500);
+        $(this).children().next().stop().slideToggle(500).parents('.about-item').toggleClass('active');
+    });
 
-    if (windowW < 991) {
-        $('.about-item').on('click', function() {
-            $(this).children().next().stop().slideToggle(500).parents('.about-item').toggleClass('active');
-        });
-    } else {
-        var servItems = $('.about-item');
-        servItems.on('mouseout', function() {
-            $(this).find('.about-item-descr').stop().slideUp(500);
-        });
-        servItems.on('mouseover', function() {
-            $(this).find('.about-item-descr').stop().slideDown(500);
+    // slider
 
-        });
-    }
+    $('.reviews-slider').not('.slick-initialized').slick({
+        slidesToShow: 3,
+        slidesToScroll: 3,
+        dots: false,
+        responsive: [{
+                breakpoint: 1199,
+                settings: {
+                    slidesToShow: 3,
+                    slidesToScroll: 3,
+                    dots: false,
+                }
+            },
+            {
+                breakpoint: 1050,
+                settings: {
+                    slidesToShow: 2,
+                    slidesToScroll: 2,
+                }
+            },
+            {
+                breakpoint: 991,
+                settings: {
+                    slidesToShow: 1,
+                    slidesToScroll: 1,
+                    dots: true,
+                    arrows: false,
+                }
+            },
+            {
+                breakpoint: 767,
+                settings: {
+                    slidesToShow: 1,
+                    slidesToScroll: 1,
+                    slidesToScroll: 1,
+                    dots: true,
+                    arrows: false,
+                }
+            },
+        ]
+    });
 
-    if (windowW < 767) {
-        $('.advantages-items').slick({
-            slidesToShow: 1,
-            slidesToScroll: 1,
-            dots: true,
-            arrows: false,
-        });
-        $('.reviews-slider').slick({
-            slidesToShow: 1,
-            slidesToScroll: 1,
-            slidesToScroll: 1,
-            dots: true,
-            arrows: false,
-        });
-        $('.works-items').slick({
-            slidesToShow: 1,
-            slidesToScroll: 1,
-            dots: true,
-            arrows: false,
-        });
-    } else if (windowW < 991) {
-        $('.reviews-slider').slick({
-            slidesToShow: 1,
-            slidesToScroll: 1,
-            dots: true,
-            arrows: false,
-        });
-        $('.works-items').slick({
-            slidesToShow: 2,
-            slidesToScroll: 1,
-            dots: true,
-            arrows: false,
-        });
-        $('.advantages-items').slick({
-            slidesToShow: 2,
-            slidesToScroll: 1,
-            dots: true,
-            arrows: false,
-        });
-    } else if (windowW < 1050) {
-        $('.advantages-items').slick({
+    function sliderOne() {
+        $('.advantages-items').not('.slick-initialized').slick({
             slidesToShow: 3,
             slidesToScroll: 1,
             dots: true,
             arrows: false,
+            responsive: [{
+                    breakpoint: 1050,
+                    settings: {
+                        slidesToShow: 3,
+                        slidesToScroll: 1,
+                        dots: true,
+                        arrows: false,
+                    }
+                },
+                {
+                    breakpoint: 991,
+                    settings: {
+                        slidesToShow: 2,
+                        slidesToScroll: 1,
+                        dots: true,
+                        arrows: false,
+                    }
+                },
+                {
+                    breakpoint: 767,
+                    settings: {
+                        slidesToShow: 1,
+                        slidesToScroll: 1,
+                        dots: true,
+                        arrows: false,
+                    }
+                },
+
+            ]
         });
-        $('.reviews-slider').slick({
-            slidesToShow: 2,
-            slidesToScroll: 2,
-        });
-        $('.works-items').slick({
+    };
+
+    function sliderTwo() {
+        $('.works-items').not('.slick-initialized').slick({
             slidesToShow: 3,
             slidesToScroll: 1,
             dots: true,
             arrows: false,
+            responsive: [{
+                    breakpoint: 991,
+                    settings: {
+                        slidesToShow: 2,
+                        slidesToScroll: 1,
+                        dots: true,
+                        arrows: false,
+                    }
+                },
+                {
+                    breakpoint: 767,
+                    settings: {
+                        slidesToShow: 1,
+                        slidesToScroll: 1,
+                        dots: true,
+                        arrows: false,
+                    }
+                },
+
+            ]
         });
-    } else if (windowW < 1199) {
-        $('.advantages-items').slick({
-            slidesToShow: 3,
-            slidesToScroll: 1,
-            dots: true,
-            arrows: false,
-        });
-        $('.reviews-slider').slick({
-            slidesToShow: 3,
-            slidesToScroll: 3,
-            dots: false,
-        });
-    } else {
-        $('.reviews-slider').slick({
-            slidesToShow: 3,
-            slidesToScroll: 3,
-            dots: false,
-        });
-    }
+    };
+
+    if (windowW < 1191) {
+        sliderOne();
+        sliderTwo();
+    };
+
+    // resize slider
+    var counter = 0;
+    var i = 0;
+
+    $(window).on('resize orientationchange', function(event) {
+        var windowEl = $('body');
+        var windowW = windowEl.width();
+
+        if (windowW < 1191) {
+            counter++
+            if (counter == 1) {
+                sliderOne();
+                sliderTwo();
+                i = 1;
+                counter = 0;
+            }
+        } else if (windowW >= 1191 && i == 1) {
+            $('.advantages-item, .works-item').removeAttr('id aria-describedby tabindex role'); //на это не обращай внимания
+            setTimeout(function() {
+                $('.advantages-items, .works-items').slick('unslick');
+
+            }, 500);
+            counter = 0;
+            i = 0;
+        };
+    });
+
 
     //smooth anchor
 
@@ -249,5 +301,4 @@ $(document).ready(function($) {
             pop_up_moving_to.val(home_to);
         });
     });
-
 });
